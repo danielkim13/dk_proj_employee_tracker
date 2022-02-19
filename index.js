@@ -35,10 +35,10 @@ function initialPrompt() {
           allRoles();
           break;
         case "view all employees":
-          allEmployees()
+          allEmployees();
           break;
         case "add a department":
-          console.log("add a department");
+          addDepartment();
           break;
         case "add a role":
           console.log("add a role");
@@ -56,8 +56,12 @@ function initialPrompt() {
     });
 }
 
+// view all departments
 function allDepartments() {
-  const sql = `SELECT department.id AS department_id, department.name AS department_name FROM department`;
+  const sql = `SELECT 
+  department.id AS department_id, 
+  department.name AS department_name 
+  FROM department`;
 
   db.query(sql, (err, rows) => {
     if (err) throw err;
@@ -68,8 +72,15 @@ function allDepartments() {
   });
 }
 
+// view all roles
 function allRoles() {
-  const sql = `SELECT role.id AS role_id, role.title AS job_title, role.salary, department.name AS department_name FROM role LEFT JOIN department ON role.department_id = department.id`;
+  const sql = `SELECT 
+  role.id AS role_id, 
+  role.title AS job_title, 
+  role.salary, 
+  department.name AS department_name 
+  FROM role 
+  LEFT JOIN department ON role.department_id = department.id`;
 
   db.query(sql, (err, rows) => {
     if (err) throw err;
@@ -80,6 +91,57 @@ function allRoles() {
   });
 }
 
+// TODO view all employees but issue w/ manager name display
 function allEmployees() {
-    const sql = ``
+  const sql = `SELECT
+  employee.id AS employee_id,
+  employee.first_name,
+  employee.last_name,
+  role.title AS job_title,
+  department.name AS department,
+  role.salary AS salary,
+  CONCAT(manager.first_name,' ',manager.last_name) AS manager
+  FROM employee
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id
+  LEFT JOIN employee manager ON employee.manager_id = manager.id`;
+
+  db.query(sql, (err, rows) => {
+    if (err) throw err;
+    console.log(`\n`);
+    console.table(rows);
+    console.log(`\n`);
+    initialPrompt();
+  });
+}
+
+// adding department.
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "depName",
+        message: "Enter the name of the department",
+        validate: (depName) => {
+          if (depName.length > 0 && isNaN(depName)) {
+            return true;
+          } else {
+            console.log("Enter a valid department name!");
+            return false;
+          }
+        },
+      },
+    ])
+    .then(({ depName }) => {
+      const sql = `INSERT INTO department(name) VALUES (?)`;
+
+      db.query(sql, depName, (err, result) => {
+        if (err) throw err;
+        console.log(`\n`);
+        console.log("Department name updated to the database");
+        console.log(`\n`);
+        initialPrompt();
+      });
+    });
 }
