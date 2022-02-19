@@ -29,13 +29,13 @@ function initialPrompt() {
 
       switch (selection) {
         case "view all departments":
-          allDepartment();
+          allDepartments();
           break;
         case "view all roles":
-          console.log("view all roles");
+          allRoles();
           break;
         case "view all employees":
-          console.log("view all employees");
+          allEmployees()
           break;
         case "add a department":
           console.log("add a department");
@@ -56,8 +56,8 @@ function initialPrompt() {
     });
 }
 
-function allDepartment() {
-  const sql = `SELECT * FROM department`;
+function allDepartments() {
+  const sql = `SELECT department.id AS department_id, department.name AS department_name FROM department`;
 
   db.query(sql, (err, rows) => {
     if (err) throw err;
@@ -66,4 +66,20 @@ function allDepartment() {
     console.log(`\n`);
     initialPrompt();
   });
+}
+
+function allRoles() {
+  const sql = `SELECT role.id AS role_id, role.title AS job_title, role.salary, department.name AS department_name FROM role LEFT JOIN department ON role.department_id = department.id`;
+
+  db.query(sql, (err, rows) => {
+    if (err) throw err;
+    console.log(`\n`);
+    console.table(rows);
+    console.log(`\n`);
+    initialPrompt();
+  });
+}
+
+function allEmployees() {
+    const sql = ``
 }
