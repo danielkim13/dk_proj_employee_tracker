@@ -1,0 +1,25 @@
+{
+  "name": "dk_proj_employee_tracker",
+  "version": "1.0.0",
+  "description": "<h1 align=\"center\">Hello! I'm Daniel Kim</h1> <h2 align=\"center\">Challenge #12: mySQL Challenge - Employee Tracker</h2>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielkim13/dk_proj_employee_tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielkim13/dk_proj_employee_tracker/issues"
+  },
+  "homepage": "https://github.com/danielkim13/dk_proj_employee_tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.0",
+    "mysql2": "^2.3.3"
+  }
+}
