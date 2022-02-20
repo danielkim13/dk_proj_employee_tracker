@@ -52,6 +52,14 @@ class dbQuery {
   addRole(answer) {
     return this.db.query(`INSERT INTO role SET ?`, answer);
   }
+
+  addEmployee() {
+    return this.db.query(`INSERT INTO employee SET ?`, variable);
+  }
+
+  modRole() {
+    return this.db.query(`SELECT role.id, role.title FROM role`);
+  }
 }
 
 module.exports = new dbQuery(db);

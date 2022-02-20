@@ -45,7 +45,7 @@ function initialPrompt() {
           addRole();
           break;
         case "add an employee":
-          console.log("add an employee");
+          addEmployee();
           break;
         case "update an employee role":
           console.log("update an employee role");
@@ -104,7 +104,6 @@ async function addDepartment() {
       },
     },
   ]);
-  console.log(deptName);
   await dbQuery.addDept(deptName);
   console.log(`\n`);
   console.log("Department has been added to the database");
@@ -117,7 +116,7 @@ async function addRole() {
   const dept = await dbQuery.viewAllDept();
   const deptList = dept.map(({ id, name }) => ({ name: name, value: id }));
 
-  const answer = await inquirer.prompt([
+  const roleAnswer = await inquirer.prompt([
     {
       type: "input",
       name: "title",
@@ -150,9 +149,49 @@ async function addRole() {
     },
   ]);
 
-  await dbQuery.addRole(answer);
+  await dbQuery.addRole(roleAnswer);
   console.log(`\n`);
   console.log("Role has been added to the database");
   console.log(`\n`);
   initialPrompt();
+}
+
+async function addEmployee() {
+  const dispRole = await dbQuery.modRole();
+  const roleList = dispRole.map(({ id, title }) => ({ name: title, value: id }));
+
+  const employeeAnswer = await inquirer.prompt([
+    {
+      type: "input",
+      name: "first_name",
+      message: "Enter new employee's first name",
+      validate: (firstName) => {
+        if (firstName.length > 0 && isNaN(firstName)) {
+          return true;
+        } else {
+          console.log("Enter valid first name!");
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "last_name",
+      message: "Enter new employee's last name",
+      validate: (lastName) => {
+        if (lastName.length > 0 && isNaN(lastName)) {
+          return true;
+        } else {
+          console.log("Enter valid last name!");
+          return false;
+        }
+      },
+    },
+    {
+      type: "list",
+      name: "role_id",
+      message: "Choose a role",
+      choices: roleList,
+    },
+  ]);
 }
