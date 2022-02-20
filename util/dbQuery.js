@@ -44,6 +44,14 @@ class dbQuery {
   addDept(deptName) {
     return this.db.query(`INSERT INTO department SET ?`, deptName);
   }
+
+  viewAllDept() {
+    return this.db.query(`SELECT * FROM department`);
+  }
+
+  addRole(answer) {
+    return this.db.query(`INSERT INTO role SET ?`, answer);
+  }
 }
 
 module.exports = new dbQuery(db);

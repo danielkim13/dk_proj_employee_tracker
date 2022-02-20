@@ -107,27 +107,23 @@ async function addDepartment() {
   console.log(deptName);
   await dbQuery.addDept(deptName);
   console.log(`\n`);
-  console.log("Department name added to the database");
+  console.log("Department has been added to the database");
   console.log(`\n`);
   initialPrompt();
 }
 
 // adding role
-function addRole() {
-  const deptList = [];
-  db.query(`SELECT * FROM department`, (err, result) => {
-    if (err) throw err;
-    deptList.push(result);
-  });
-  const modList = deptList.map(({ id, name }) => ({ name: name, value: id }));
+async function addRole() {
+  const dept = await dbQuery.viewAllDept();
+  const deptList = dept.map(({ id, name }) => ({ name: name, value: id }));
 
-  inquirer.prompt([
+  const answer = await inquirer.prompt([
     {
       type: "input",
-      name: "eName",
+      name: "title",
       message: "Enter the role name",
-      validate: (eName) => {
-        if (eName.length > 0 && isNaN(eName)) {
+      validate: (title) => {
+        if (title.length > 0 && isNaN(title)) {
           return true;
         } else {
           return false;
@@ -148,9 +144,15 @@ function addRole() {
     },
     {
       type: "list",
-      name: "dept",
+      name: "department_id",
       message: "Which department does this role belongs to?",
-      choices: modList,
+      choices: deptList,
     },
   ]);
+
+  await dbQuery.addRole(answer);
+  console.log(`\n`);
+  console.log("Role has been added to the database");
+  console.log(`\n`);
+  initialPrompt();
 }
