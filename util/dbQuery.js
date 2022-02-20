@@ -77,6 +77,11 @@ class dbQuery {
   allRol() {
     return this.db.query(`SELECT role.id, role.title FROM role`);
   }
+
+  // method to change manager name.
+  modEmpManager(manId, empId) {
+    return this.db.query(`UPDATE employee SET employee.manager_id = ? WHERE employee.id = ?`, [manId, empId]);
+  }
 }
 
 module.exports = new dbQuery(db);
