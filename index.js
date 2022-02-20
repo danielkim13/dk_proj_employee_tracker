@@ -41,7 +41,7 @@ function initialPrompt() {
           addDepartment();
           break;
         case "add a role":
-          console.log("add a role");
+          addRole();
           break;
         case "add an employee":
           console.log("add an employee");
@@ -91,7 +91,7 @@ function allRoles() {
   });
 }
 
-// TODO view all employees but issue w/ manager name display
+// view all employees.
 function allEmployees() {
   const sql = `SELECT
   employee.id AS employee_id,
@@ -144,4 +144,47 @@ function addDepartment() {
         initialPrompt();
       });
     });
+}
+
+// adding role
+function addRole() {
+  const deptList = [];
+  db.query(`SELECT * FROM department`, (err, result) => {
+    if (err) throw err;
+    deptList.push(result);
+  });
+  const modList = deptList.map(({ id, name }) => ({ name: name, value: id }));
+
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "eName",
+      message: "Enter the role name",
+      validate: (eName) => {
+        if (eName.length > 0 && isNaN(eName)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "Enter the salary",
+      validate: (salary) => {
+        if (!isNaN(salary)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    },
+    {
+      type: "list",
+      name: "dept",
+      message: "Which department does this role belongs to?",
+      choices: modList,
+    },
+  ]);
 }
