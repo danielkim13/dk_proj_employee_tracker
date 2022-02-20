@@ -48,9 +48,10 @@ function initialPrompt() {
           addEmployee();
           break;
         case "update an employee role":
-          console.log("update an employee role");
+          updateEmpRole();
           break;
         case "exit application":
+          console.log("Application session ended. Thank you!");
           process.exit();
           break;
       }
@@ -160,6 +161,9 @@ async function addEmployee() {
   const dispRole = await dbQuery.modRole();
   const roleList = dispRole.map(({ id, title }) => ({ name: title, value: id }));
 
+  const dispEmp = await dbQuery.modEmp();
+  const manList = dispEmp.map(({ id, manager }) => ({ name: manager, value: id }));
+
   const employeeAnswer = await inquirer.prompt([
     {
       type: "input",
@@ -190,8 +194,52 @@ async function addEmployee() {
     {
       type: "list",
       name: "role_id",
-      message: "Choose a role",
+      message: "select the employee's role",
+      choices: roleList,
+    },
+    {
+      type: "list",
+      name: "manager_id",
+      message: "Select the employee's manager",
+      choices: manList,
+    },
+  ]);
+  await dbQuery.addEmployee(employeeAnswer);
+  console.log(`\n`);
+  console.log("Employee has been added to the database");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+async function updateEmpRole() {
+  const emp = await dbQuery.allEmp();
+  const empList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
+
+  const empId = await inquirer.prompt([
+    {
+      type: "list",
+      name: "id",
+      message: "Select the employee to change role",
+      choices: empList,
+    },
+  ]);
+
+  const role = await dbQuery.allRol();
+  const roleList = role.map(({ id, title }) => ({ name: title, value: id }));
+
+  const roleId = await inquirer.prompt([
+    {
+      type: "list",
+      name: "role_id",
+      message: "Select the employee's role",
       choices: roleList,
     },
   ]);
+  console.log(roleId.role_id);
+
+  await dbQuery.modEmployeeRole(roleId.role_id, empId.id);
+  console.log(`\n`);
+  console.log("Employee's role has been updated to the database");
+  console.log(`\n`);
+  initialPrompt();
 }

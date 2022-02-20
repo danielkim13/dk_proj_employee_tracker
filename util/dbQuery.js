@@ -8,14 +8,14 @@ class dbQuery {
   constructor(db) {
     this.db = db;
   }
-
+  // method to view all the department table.
   viewDepartment() {
     return this.db.query(`SELECT 
         department.id AS department_id, 
         department.name AS department_name 
         FROM department`);
   }
-
+  // method to view all role table.
   viewRole() {
     return this.db.query(`SELECT 
       role.id AS role_id, 
@@ -25,7 +25,7 @@ class dbQuery {
       FROM role 
       LEFT JOIN department ON role.department_id = department.id`);
   }
-
+  // method to view all employee table.
   viewEmployee() {
     return this.db.query(`SELECT
       employee.id AS employee_id,
@@ -40,24 +40,41 @@ class dbQuery {
       LEFT JOIN department ON role.department_id = department.id
       LEFT JOIN employee manager ON employee.manager_id = manager.id`);
   }
-
+  // method to add department
   addDept(deptName) {
     return this.db.query(`INSERT INTO department SET ?`, deptName);
   }
-
+  // method to view department for the addRole method. redundancy but this one doesn't modify the column names.
   viewAllDept() {
     return this.db.query(`SELECT * FROM department`);
   }
-
+  // method to add role.
   addRole(answer) {
     return this.db.query(`INSERT INTO role SET ?`, answer);
   }
-
-  addEmployee() {
-    return this.db.query(`INSERT INTO employee SET ?`, variable);
+  // method to add new employee
+  addEmployee(eAnswer) {
+    return this.db.query(`INSERT INTO employee SET ?`, eAnswer);
+  }
+  // method for supporting addEmployee method.
+  modRole() {
+    return this.db.query(`SELECT role.id, role.title FROM role`);
+  }
+  // method for supporting addEmployee method
+  modEmp() {
+    return this.db.query(`SELECT employee.id, CONCAT(employee.first_name,' ',employee.last_name) AS manager FROM employee`);
   }
 
-  modRole() {
+  // method updating employee role.
+  modEmployeeRole(roleId, empId) {
+    return this.db.query(`UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`, [roleId, empId]);
+  }
+
+  allEmp() {
+    return this.db.query(`SELECT employee.id, CONCAT(employee.first_name,' ',employee.last_name) AS full_name FROM employee`);
+  }
+
+  allRol() {
     return this.db.query(`SELECT role.id, role.title FROM role`);
   }
 }
