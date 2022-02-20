@@ -24,4 +24,12 @@ VALUES
 ('Kevin', 'Collins', '2', NULL),
 ('Susan', 'Kratzer', '8', '3'),
 ('Megan', 'Wendell', '2', '3'),
-('Tom', 'Cotton', '1', '2');
+('Mason', 'Lee', '3', '2'),
+('Tom', 'Cotton', '3', '2'),
+('Tobby', 'Keith', '3', '2'),
+('Connor', 'Kim', '3', '2'),
+('Mere', 'Engwall', '3', '2'),
+('Young', 'Kim', '3', '2'),
+('Amy', 'Ngyuen', '3', '2'),
+('Alex', 'Eden', '3', '2'),
+('Tony', 'Tiger', '3', '2');

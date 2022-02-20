@@ -22,7 +22,19 @@ function initialPrompt() {
         type: "list",
         name: "selection",
         message: "What would you like to do?",
-        choices: ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role", "update an employee manager", "exit application", new inquirer.Separator()],
+        choices: [
+          "view all departments",
+          "view all roles",
+          "view all employees",
+          "view employees by a manager",
+          "add a department",
+          "add a role",
+          "add an employee",
+          "update an employee role",
+          "update an employee manager",
+          "exit application",
+          new inquirer.Separator(),
+        ],
       },
     ])
     .then((answer) => {
@@ -38,6 +50,8 @@ function initialPrompt() {
         case "view all employees":
           allEmployees();
           break;
+        case "view employees by a manager":
+          viewEmpByManager();
         case "add a department":
           addDepartment();
           break;
@@ -86,6 +100,27 @@ async function allEmployees() {
 
   console.log(`\n`);
   console.table(emp);
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// view employees by managers
+async function viewEmpByManager() {
+  const emp = await dbQuery.allEmp();
+  const manList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
+
+  const answer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "manager",
+      message: "Select a manager",
+      choices: manList,
+    },
+  ]);
+
+  const empByMan = await dbQuery.viewEmpByMan(answer.manager);
+  console.log(`\n`);
+  console.table(empByMan);
   console.log(`\n`);
   initialPrompt();
 }

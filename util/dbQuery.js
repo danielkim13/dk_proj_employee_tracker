@@ -82,6 +82,22 @@ class dbQuery {
   modEmpManager(manId, empId) {
     return this.db.query(`UPDATE employee SET employee.manager_id = ? WHERE employee.id = ?`, [manId, empId]);
   }
+
+  //   method to view employees by selecting a manager.
+  viewEmpByMan(managerId) {
+    return this.db.query(
+      `SELECT
+    CONCAT(employee.first_name,' ',employee.last_name) AS full_name,
+    role.title AS job_title,
+    department.name AS department,
+    role.salary AS salary
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.id
+    LEFT JOIN department ON role.department_id = department.id
+    WHERE employee.manager_id = ?`,
+      managerId
+    );
+  }
 }
 
 module.exports = new dbQuery(db);
