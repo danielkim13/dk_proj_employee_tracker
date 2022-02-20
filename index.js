@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const db = require("./db/connection.js");
+const dbQuery = require("./util/dbQuery");
 
 // connect to db for error handling and initiate the app.
 db.connect((err) => {
@@ -29,7 +30,7 @@ function initialPrompt() {
 
       switch (selection) {
         case "view all departments":
-          allDepartments();
+          allDept();
           break;
         case "view all roles":
           allRoles();
@@ -57,38 +58,23 @@ function initialPrompt() {
 }
 
 // view all departments
-function allDepartments() {
-  const sql = `SELECT 
-  department.id AS department_id, 
-  department.name AS department_name 
-  FROM department`;
+async function allDept() {
+  const dept = await dbQuery.viewDepartment();
 
-  db.query(sql, (err, rows) => {
-    if (err) throw err;
-    console.log(`\n`);
-    console.table(rows);
-    console.log(`\n`);
-    initialPrompt();
-  });
+  console.log(`\n`);
+  console.table(dept);
+  console.log(`\n`);
+  initialPrompt();
 }
 
 // view all roles
-function allRoles() {
-  const sql = `SELECT 
-  role.id AS role_id, 
-  role.title AS job_title, 
-  role.salary, 
-  department.name AS department_name 
-  FROM role 
-  LEFT JOIN department ON role.department_id = department.id`;
+async function allRoles() {
+  const role = await dbQuery.viewRole();
 
-  db.query(sql, (err, rows) => {
-    if (err) throw err;
-    console.log(`\n`);
-    console.table(rows);
-    console.log(`\n`);
-    initialPrompt();
-  });
+  console.log(`\n`);
+  console.table(role);
+  console.log(`\n`);
+  initialPrompt();
 }
 
 // view all employees.
