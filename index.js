@@ -22,7 +22,7 @@ function initialPrompt() {
         type: "list",
         name: "selection",
         message: "What would you like to do?",
-        choices: ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role", "exit application", new inquirer.Separator()],
+        choices: ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role", "update an employee manager", "exit application", new inquirer.Separator()],
       },
     ])
     .then((answer) => {
@@ -50,10 +50,12 @@ function initialPrompt() {
         case "update an employee role":
           updateEmpRole();
           break;
+        case "update an employee manager":
+          updateEmpMan();
+          break;
         case "exit application":
           console.log("Application session ended. Thank you!");
           process.exit();
-          break;
       }
     });
 }
@@ -156,7 +158,7 @@ async function addRole() {
   console.log(`\n`);
   initialPrompt();
 }
-
+// add employee
 async function addEmployee() {
   const dispRole = await dbQuery.modRole();
   const roleList = dispRole.map(({ id, title }) => ({ name: title, value: id }));
@@ -210,7 +212,7 @@ async function addEmployee() {
   console.log(`\n`);
   initialPrompt();
 }
-
+// update employee role
 async function updateEmpRole() {
   const emp = await dbQuery.allEmp();
   const empList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
@@ -240,6 +242,35 @@ async function updateEmpRole() {
   await dbQuery.modEmployeeRole(roleId.role_id, empId.id);
   console.log(`\n`);
   console.log("Employee's role has been updated to the database");
+  console.log(`\n`);
+  initialPrompt();
+}
+// update employee manager
+async function updateEmpMan() {
+  const emp = await dbQuery.allEmp();
+  const empList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
+
+  const man = await dbQuery.modEmp();
+  const manList = man.map(({ id, manager }) => ({ name: manager, value: id }));
+
+  const userAnswers = await inquirer.prompt([
+    {
+      type: "list",
+      name: "empId",
+      message: "Select employee to change his/her manager",
+      choices: empList,
+    },
+    {
+      type: "list",
+      name: "manId",
+      message: "Select the employee's manager",
+      choices: manList,
+    },
+  ]);
+  await dbQuery.modEmpManager(userAnswers.manId, userAnswers.empId);
+
+  console.log(`\n`);
+  console.log("Employee manager has been updated to the database");
   console.log(`\n`);
   initialPrompt();
 }
