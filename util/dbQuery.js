@@ -25,6 +25,25 @@ class dbQuery {
       FROM role 
       LEFT JOIN department ON role.department_id = department.id`);
   }
+
+  viewEmployee() {
+    return this.db.query(`SELECT
+      employee.id AS employee_id,
+      employee.first_name,
+      employee.last_name,
+      role.title AS job_title,
+      department.name AS department,
+      role.salary AS salary,
+      CONCAT(manager.first_name,' ',manager.last_name) AS manager
+      FROM employee
+      LEFT JOIN role ON employee.role_id = role.id
+      LEFT JOIN department ON role.department_id = department.id
+      LEFT JOIN employee manager ON employee.manager_id = manager.id`);
+  }
+
+  addDept(deptName) {
+    return this.db.query(`INSERT INTO department(name) VALUES (?)`, deptName);
+  }
 }
 
 module.exports = new dbQuery(db);

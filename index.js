@@ -78,58 +78,38 @@ async function allRoles() {
 }
 
 // view all employees.
-function allEmployees() {
-  const sql = `SELECT
-  employee.id AS employee_id,
-  employee.first_name,
-  employee.last_name,
-  role.title AS job_title,
-  department.name AS department,
-  role.salary AS salary,
-  CONCAT(manager.first_name,' ',manager.last_name) AS manager
-  FROM employee
-  LEFT JOIN role ON employee.role_id = role.id
-  LEFT JOIN department ON role.department_id = department.id
-  LEFT JOIN employee manager ON employee.manager_id = manager.id`;
+async function allEmployees() {
+  const emp = await dbQuery.viewEmployee();
 
-  db.query(sql, (err, rows) => {
-    if (err) throw err;
-    console.log(`\n`);
-    console.table(rows);
-    console.log(`\n`);
-    initialPrompt();
-  });
+  console.log(`\n`);
+  console.table(emp);
+  console.log(`\n`);
+  initialPrompt();
 }
 
 // adding department.
-function addDepartment() {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        name: "depName",
-        message: "Enter the name of the department",
-        validate: (depName) => {
-          if (depName.length > 0 && isNaN(depName)) {
-            return true;
-          } else {
-            console.log("Enter a valid department name!");
-            return false;
-          }
-        },
+async function addDepartment() {
+  const deptName = await inquirer.prompt([
+    {
+      type: "input",
+      name: "deptName",
+      message: "Enter the name of the department",
+      validate: (name) => {
+        if (name.length > 0 && isNaN(name)) {
+          return true;
+        } else {
+          console.log("Enter a valid department name!");
+          return false;
+        }
       },
-    ])
-    .then(({ depName }) => {
-      const sql = `INSERT INTO department(name) VALUES (?)`;
-
-      db.query(sql, depName, (err, result) => {
-        if (err) throw err;
-        console.log(`\n`);
-        console.log("Department name updated to the database");
-        console.log(`\n`);
-        initialPrompt();
-      });
-    });
+    },
+  ]);
+  console.log({ deptName });
+  await dbQuery.addDept(deptName);
+  console.log(`\n`);
+  console.log("Department name added to the database");
+  console.log(`\n`);
+  initialPrompt();
 }
 
 // adding role
