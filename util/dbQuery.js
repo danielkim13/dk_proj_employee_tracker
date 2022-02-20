@@ -42,7 +42,7 @@ class dbQuery {
   }
 
   addDept(deptName) {
-    return this.db.query(`INSERT INTO department(name) VALUES (?)`, deptName);
+    return this.db.query(`INSERT INTO department SET ?`, deptName);
   }
 }
 

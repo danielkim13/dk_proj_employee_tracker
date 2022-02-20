@@ -92,7 +92,7 @@ async function addDepartment() {
   const deptName = await inquirer.prompt([
     {
       type: "input",
-      name: "deptName",
+      name: "name",
       message: "Enter the name of the department",
       validate: (name) => {
         if (name.length > 0 && isNaN(name)) {
@@ -104,7 +104,7 @@ async function addDepartment() {
       },
     },
   ]);
-  console.log({ deptName });
+  console.log(deptName);
   await dbQuery.addDept(deptName);
   console.log(`\n`);
   console.log("Department name added to the database");
