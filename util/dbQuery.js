@@ -87,6 +87,7 @@ class dbQuery {
   viewEmpByMan(managerId) {
     return this.db.query(
       `SELECT
+    CONCAT(manager.first_name,' ',manager.last_name) AS manager,
     CONCAT(employee.first_name,' ',employee.last_name) AS full_name,
     role.title AS job_title,
     department.name AS department,
@@ -94,8 +95,24 @@ class dbQuery {
     FROM employee
     LEFT JOIN role ON employee.role_id = role.id
     LEFT JOIN department ON role.department_id = department.id
+    LEFT JOIN employee manager ON employee.manager_id = manager.id
     WHERE employee.manager_id = ?`,
       managerId
+    );
+  }
+
+  //   method to view employees by selecting a department.
+  viewEmpByDept(departmentId) {
+    return this.db.query(
+      `SELECT 
+    department.name AS department,
+    CONCAT(employee.first_name,' ',employee.last_name) AS full_name,
+    role.title AS job_title
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.id
+    LEFT JOIN department ON role.department_id = department.id
+    WHERE role.department_id = (SELECT department.id FROM department WHERE department.id = ?)`,
+      departmentId
     );
   }
 }

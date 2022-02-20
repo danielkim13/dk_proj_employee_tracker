@@ -26,6 +26,7 @@ function initialPrompt() {
           "view all departments",
           "view all roles",
           "view all employees",
+          "view employees by a department",
           "view employees by a manager",
           "add a department",
           "add a role",
@@ -50,8 +51,12 @@ function initialPrompt() {
         case "view all employees":
           allEmployees();
           break;
+        case "view employees by a department":
+          viewEmpByDept();
+          break;
         case "view employees by a manager":
           viewEmpByManager();
+          break;
         case "add a department":
           addDepartment();
           break;
@@ -104,12 +109,33 @@ async function allEmployees() {
   initialPrompt();
 }
 
-// view employees by managers
+// view employees by a department.
+async function viewEmpByDept() {
+  const dept = await dbQuery.viewAllDept();
+  const deptList = dept.map(({ id, name }) => ({ name: name, value: id }));
+
+  const userAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "dept",
+      message: "Select a department",
+      choices: deptList,
+    },
+  ]);
+
+  const empByDept = await dbQuery.viewEmpByDept(userAnswer.dept);
+  console.log(`\n`);
+  console.table(empByDept);
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// view employees by a manager.
 async function viewEmpByManager() {
   const emp = await dbQuery.allEmp();
   const manList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
 
-  const answer = await inquirer.prompt([
+  const userAnswer = await inquirer.prompt([
     {
       type: "list",
       name: "manager",
@@ -118,7 +144,7 @@ async function viewEmpByManager() {
     },
   ]);
 
-  const empByMan = await dbQuery.viewEmpByMan(answer.manager);
+  const empByMan = await dbQuery.viewEmpByMan(userAnswer.manager);
   console.log(`\n`);
   console.table(empByMan);
   console.log(`\n`);
