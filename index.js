@@ -78,7 +78,7 @@ function initialPrompt() {
         case "delete a department":
           deleteDept();
           break;
-        case "delete a role": //TODO write it
+        case "delete a role": 
           deleteRole();
           break;
         case "delete an employee": //TODO write it
@@ -366,6 +366,28 @@ async function deleteDept() {
 
   console.log(`\n`);
   console.log("The department has been deleted");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// delete a role.
+async function deleteRole() {
+  const role = await dbQuery.modRole();
+  const roleList = role.map(({ id, title }) => ({ name: title, value: id }));
+
+  const roleAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "role",
+      message: "Select a role to delete",
+      choices: roleList,
+    },
+  ]);
+
+  await dbQuery.deleteRole(roleAnswer.role);
+
+  console.log(`\n`);
+  console.log("The role has been deleted");
   console.log(`\n`);
   initialPrompt();
 }

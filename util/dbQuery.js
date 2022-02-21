@@ -120,6 +120,16 @@ class dbQuery {
   deleteDept(departmentId) {
     return this.db.query(`DELETE FROM department WHERE id = ?`, departmentId);
   }
+
+  //   method to delete a role.
+  deleteRole(roleId) {
+    return this.db.query(`DELETE FROM role WHERE id = ?`, roleId);
+  }
+
+//   method to delete an employee.
+deleteEmployee(empId) {
+    return this.db.query(`DELETE FROM employee WHERE id = ?`, empId)
+}
 }
 
 module.exports = new dbQuery(db);
