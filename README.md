@@ -28,6 +28,10 @@
 
 <hr />
 
+## Installation
+
+      npm i
+
 <h4><u>User Story</u></h4>
 
 AS A business owner
