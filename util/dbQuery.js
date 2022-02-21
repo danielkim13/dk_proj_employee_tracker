@@ -130,6 +130,10 @@ class dbQuery {
 deleteEmployee(empId) {
     return this.db.query(`DELETE FROM employee WHERE id = ?`, empId)
 }
+// method to view the total budgets.
+viewTotalBudgets() {
+    return this.db.query(``)
+}
 }
 
 module.exports = new dbQuery(db);

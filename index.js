@@ -36,6 +36,7 @@ function initialPrompt() {
           "delete a department",
           "delete a role",
           "delete an employee",
+          "View the budgets",
           "exit application",
           new inquirer.Separator(),
         ],
@@ -78,11 +79,14 @@ function initialPrompt() {
         case "delete a department":
           deleteDept();
           break;
-        case "delete a role": 
+        case "delete a role":
           deleteRole();
           break;
-        case "delete an employee": //TODO write it
+        case "delete an employee":
           deleteEmp();
+          break;
+        case "View the budgets":
+          viewBudgets();
           break;
         case "exit application":
           console.log("Application session ended. Thank you!");
@@ -388,6 +392,36 @@ async function deleteRole() {
 
   console.log(`\n`);
   console.log("The role has been deleted");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+async function deleteEmp() {
+  const emp = await dbQuery.allEmp();
+  const empList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
+
+  const empAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "emp",
+      message: "Select an employee to delete",
+      choices: empList,
+    },
+  ]);
+
+  await dbQuery.deleteEmployee(empAnswer.emp);
+
+  console.log(`\n`);
+  console.log("The employee has been deleted");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+async function viewBudgets() {
+  const totalBudget = await dbQuery.viewTotalBudgets();
+
+  console.log(`\n`);
+  console.table(totalBudget);
   console.log(`\n`);
   initialPrompt();
 }
