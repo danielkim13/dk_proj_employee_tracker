@@ -22,7 +22,24 @@ function initialPrompt() {
         type: "list",
         name: "selection",
         message: "What would you like to do?",
-        choices: ["view all departments", "view all roles", "view all employees", "add a department", "add a role", "add an employee", "update an employee role", "update an employee manager", "exit application", new inquirer.Separator()],
+        choices: [
+          "view all departments",
+          "view all roles",
+          "view all employees",
+          "view employees by a department",
+          "view employees by a manager",
+          "add a department",
+          "add a role",
+          "add an employee",
+          "update an employee role",
+          "update an employee manager",
+          "delete a department",
+          "delete a role",
+          "delete an employee",
+          "View the budgets",
+          "exit application",
+          new inquirer.Separator(),
+        ],
       },
     ])
     .then((answer) => {
@@ -38,6 +55,12 @@ function initialPrompt() {
         case "view all employees":
           allEmployees();
           break;
+        case "view employees by a department":
+          viewEmpByDept();
+          break;
+        case "view employees by a manager":
+          viewEmpByManager();
+          break;
         case "add a department":
           addDepartment();
           break;
@@ -52,6 +75,18 @@ function initialPrompt() {
           break;
         case "update an employee manager":
           updateEmpMan();
+          break;
+        case "delete a department":
+          deleteDept();
+          break;
+        case "delete a role":
+          deleteRole();
+          break;
+        case "delete an employee":
+          deleteEmp();
+          break;
+        case "View the budgets":
+          viewBudgets();
           break;
         case "exit application":
           console.log("Application session ended. Thank you!");
@@ -86,6 +121,48 @@ async function allEmployees() {
 
   console.log(`\n`);
   console.table(emp);
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// view employees by a department.
+async function viewEmpByDept() {
+  const dept = await dbQuery.viewAllDept();
+  const deptList = dept.map(({ id, name }) => ({ name: name, value: id }));
+
+  const userAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "dept",
+      message: "Select a department",
+      choices: deptList,
+    },
+  ]);
+
+  const empByDept = await dbQuery.viewEmpByDept(userAnswer.dept);
+  console.log(`\n`);
+  console.table(empByDept);
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// view employees by a manager.
+async function viewEmpByManager() {
+  const emp = await dbQuery.allEmp();
+  const manList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
+
+  const userAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "manager",
+      message: "Select a manager",
+      choices: manList,
+    },
+  ]);
+
+  const empByMan = await dbQuery.viewEmpByMan(userAnswer.manager);
+  console.log(`\n`);
+  console.table(empByMan);
   console.log(`\n`);
   initialPrompt();
 }
@@ -271,6 +348,80 @@ async function updateEmpMan() {
 
   console.log(`\n`);
   console.log("Employee manager has been updated to the database");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// delete a department.
+async function deleteDept() {
+  const dept = await dbQuery.viewAllDept();
+  const deptList = dept.map(({ id, name }) => ({ name: name, value: id }));
+
+  const deptAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "dept",
+      message: "Select a department to delete",
+      choices: deptList,
+    },
+  ]);
+
+  await dbQuery.deleteDept(deptAnswer.dept);
+
+  console.log(`\n`);
+  console.log("The department has been deleted");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// delete a role.
+async function deleteRole() {
+  const role = await dbQuery.modRole();
+  const roleList = role.map(({ id, title }) => ({ name: title, value: id }));
+
+  const roleAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "role",
+      message: "Select a role to delete",
+      choices: roleList,
+    },
+  ]);
+
+  await dbQuery.deleteRole(roleAnswer.role);
+
+  console.log(`\n`);
+  console.log("The role has been deleted");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+async function deleteEmp() {
+  const emp = await dbQuery.allEmp();
+  const empList = emp.map(({ id, full_name }) => ({ name: full_name, value: id }));
+
+  const empAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "emp",
+      message: "Select an employee to delete",
+      choices: empList,
+    },
+  ]);
+
+  await dbQuery.deleteEmployee(empAnswer.emp);
+
+  console.log(`\n`);
+  console.log("The employee has been deleted");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+async function viewBudgets() {
+  const totalBudget = await dbQuery.viewTotalBudgets();
+
+  console.log(`\n`);
+  console.table(totalBudget);
   console.log(`\n`);
   initialPrompt();
 }

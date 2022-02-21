@@ -64,5 +64,13 @@ SO THAT I can organize and plan my business
 
 <hr />
 
+## Extra Credit
+
+      - Update employee managers.
+      - View employees by managers.
+      - View employees by department.
+      - Delete departments, roles, and employees.
+      - View the total utilized budget of a department.
+
 ## My Employee Tracker walkthrough video link.
 [DK Project Employee Trakcer](TBD)
