@@ -77,4 +77,5 @@ SO THAT I can organize and plan my business
       - View the total utilized budget of a department.
 
 ## My Employee Tracker walkthrough video link.
-[DK Project Employee Trakcer](TBD)
+
+[DK Project Employee Trakcer](https://drive.google.com/file/d/1Q5r9Xjyi7Y4fmakpFP0-oroPv0Z8QItg/view)
