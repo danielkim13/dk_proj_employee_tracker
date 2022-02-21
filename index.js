@@ -33,6 +33,9 @@ function initialPrompt() {
           "add an employee",
           "update an employee role",
           "update an employee manager",
+          "delete a department",
+          "delete a role",
+          "delete an employee",
           "exit application",
           new inquirer.Separator(),
         ],
@@ -71,6 +74,15 @@ function initialPrompt() {
           break;
         case "update an employee manager":
           updateEmpMan();
+          break;
+        case "delete a department":
+          deleteDept();
+          break;
+        case "delete a role": //TODO write it
+          deleteRole();
+          break;
+        case "delete an employee": //TODO write it
+          deleteEmp();
           break;
         case "exit application":
           console.log("Application session ended. Thank you!");
@@ -332,6 +344,28 @@ async function updateEmpMan() {
 
   console.log(`\n`);
   console.log("Employee manager has been updated to the database");
+  console.log(`\n`);
+  initialPrompt();
+}
+
+// delete a department.
+async function deleteDept() {
+  const dept = await dbQuery.viewAllDept();
+  const deptList = dept.map(({ id, name }) => ({ name: name, value: id }));
+
+  const deptAnswer = await inquirer.prompt([
+    {
+      type: "list",
+      name: "dept",
+      message: "Select a department to delete",
+      choices: deptList,
+    },
+  ]);
+
+  await dbQuery.deleteDept(deptAnswer.dept);
+
+  console.log(`\n`);
+  console.log("The department has been deleted");
   console.log(`\n`);
   initialPrompt();
 }

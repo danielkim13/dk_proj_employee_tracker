@@ -115,6 +115,11 @@ class dbQuery {
       departmentId
     );
   }
+
+  //   method to delete a department.
+  deleteDept(departmentId) {
+    return this.db.query(`DELETE FROM department WHERE id = ?`, departmentId);
+  }
 }
 
 module.exports = new dbQuery(db);
