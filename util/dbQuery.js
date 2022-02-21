@@ -126,14 +126,18 @@ class dbQuery {
     return this.db.query(`DELETE FROM role WHERE id = ?`, roleId);
   }
 
-//   method to delete an employee.
-deleteEmployee(empId) {
-    return this.db.query(`DELETE FROM employee WHERE id = ?`, empId)
-}
-// method to view the total budgets.
-viewTotalBudgets() {
-    return this.db.query(``)
-}
+  //   method to delete an employee.
+  deleteEmployee(empId) {
+    return this.db.query(`DELETE FROM employee WHERE id = ?`, empId);
+  }
+  // method to view the total budgets.
+  viewTotalBudgets() {
+    return this.db.query(`SELECT department.name AS department_name, sum(role.salary) AS total_budget
+    FROM employee
+    LEFT JOIN role ON employee.role_id = role.id
+    LEFT JOIN department ON role.department_id = department.id
+    GROUP BY department.name`);
+  }
 }
 
 module.exports = new dbQuery(db);
